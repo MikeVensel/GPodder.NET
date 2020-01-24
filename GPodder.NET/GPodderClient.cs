@@ -28,7 +28,5 @@ namespace GPodder.NET
             this.configurationManager = new ConfigurationManager();
             this.Authentication = new Authentication(this.configurationManager);
         }
-
-        private string SessionId { get; set; }
     }
 }
