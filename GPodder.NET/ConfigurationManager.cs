@@ -7,7 +7,7 @@ namespace GPodder.NET
     using System.Text.Json;
     using System.Threading.Tasks;
     using System.Timers;
-    using GPodder.NET.GPodderModels;
+    using GPodder.NET.Models;
 
     /// <summary>
     /// Stores configuration information for gPodder.

@@ -2,7 +2,7 @@
 // Copyright (c) MikeVensel. All rights reserved.
 // </copyright>
 
-namespace GPodder.NET.GPodderModels
+namespace GPodder.NET.Models
 {
     using System.Text.Json.Serialization;
 

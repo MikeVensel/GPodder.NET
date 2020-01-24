@@ -1,7 +1,7 @@
 ﻿namespace GPodder.NET.Tests
 {
     using System.Text.Json;
-    using GPodder.NET.GPodderModels;
+    using GPodder.NET.Models;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     /// <summary>
