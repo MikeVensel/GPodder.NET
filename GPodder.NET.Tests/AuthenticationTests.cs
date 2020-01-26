@@ -26,14 +26,7 @@ namespace GPodder.NET.Tests
             var client = new GPodderClient();
             Task.Run(async () =>
             {
-                try
-                {
-                    await client.Authentication.Login(this.username, this.password);
-                }
-                catch (Exception e)
-                {
-                    Assert.Fail($"The following exception was thrown. {e.Message}");
-                }
+                await client.Authentication.Login(this.username, this.password);
             }).GetAwaiter().GetResult();
         }
 
@@ -46,15 +39,8 @@ namespace GPodder.NET.Tests
             var client = new GPodderClient();
             Task.Run(async () =>
             {
-                try
-                {
-                    await client.Authentication.Login(this.username, this.password);
-                    await client.Authentication.Logout(this.username);
-                }
-                catch (Exception e)
-                {
-                    Assert.Fail($"The following exception was thrown. {e.Message}");
-                }
+                await client.Authentication.Login(this.username, this.password);
+                await client.Authentication.Logout(this.username);
             }).GetAwaiter().GetResult();
         }
     }
