@@ -17,7 +17,7 @@ namespace GPodder.NET
     /// </summary>
     public class Authentication
     {
-        private ConfigurationManager configurationManager;
+        private readonly ConfigurationManager configurationManager;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Authentication"/> class.
@@ -62,7 +62,7 @@ namespace GPodder.NET
                     // If the client provides a cookie, but for a different username than the one given
                     throw new BadRequestException("The provided session ID did not belong to the provided user.");
                 default:
-                    throw new Exception($"An error status code of {authResponse.StatusCode} was returned from gPodder.");
+                    throw new GenericWebResponseException($"An error status code of {authResponse.StatusCode} was returned from gPodder.");
             }
         }
 
@@ -87,7 +87,7 @@ namespace GPodder.NET
                 case HttpStatusCode.BadRequest:
                     throw new BadRequestException("The provided session ID did not belong to the provided user.");
                 default:
-                    throw new Exception($"An error status code of {logoutResponse.StatusCode} was returned from gPodder.");
+                    throw new GenericWebResponseException($"An error status code of {logoutResponse.StatusCode} was returned from gPodder.");
             }
         }
     }
