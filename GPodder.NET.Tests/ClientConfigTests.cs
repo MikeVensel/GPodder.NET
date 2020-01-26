@@ -1,4 +1,8 @@
-﻿namespace GPodder.NET.Tests
+﻿// <copyright file="ClientConfigTests.cs" company="MikeVensel">
+// Copyright (c) MikeVensel. All rights reserved.
+// </copyright>
+
+namespace GPodder.NET.Tests
 {
     using System.Text.Json;
     using GPodder.NET.Models;
