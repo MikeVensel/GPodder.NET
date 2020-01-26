@@ -18,6 +18,17 @@ namespace GPodder.NET
         {
             this.configurationManager = new ConfigurationManager();
             this.Authentication = new Authentication(this.configurationManager);
+            this.Directory = new Directory(this.configurationManager);
         }
+
+        /// <summary>
+        /// Gets the <see cref="Authentication"/> class to make authentication requests.
+        /// </summary>
+        public Authentication Authentication { get; }
+
+        /// <summary>
+        /// Gets the <see cref="Directory"/> class to make directory requests.
+        /// </summary>
+        public Directory Directory { get; }
     }
 }
