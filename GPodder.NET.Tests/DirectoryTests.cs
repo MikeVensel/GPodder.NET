@@ -94,5 +94,20 @@ namespace GPodder.NET.Tests
                 Assert.IsTrue(podcastCollection.Count() <= 1);
             }).GetAwaiter().GetResult();
         }
+
+        /// <summary>
+        /// Tests the <see cref="Directory.GetPodcastData(string, int)"/> method.
+        /// </summary>
+        [TestMethod]
+        public void TestGetPodcastData()
+        {
+            string url = "http://joeroganexp.joerogan.libsynpro.com/rss";
+            var client = new GPodderClient();
+            Task.Run(async () =>
+            {
+                var podcast = await client.Directory.GetPodcastData(url);
+                Assert.IsNotNull(podcast);
+            }).GetAwaiter().GetResult();
+        }
     }
 }

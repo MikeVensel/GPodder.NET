@@ -4,11 +4,11 @@
 
 namespace GPodder.NET
 {
+    using System;
     using System.Collections.Generic;
     using System.Net.Http;
     using System.Text.Json;
     using System.Threading.Tasks;
-    using GPodder.NET.Exceptions;
     using GPodder.NET.Models;
 
     /// <summary>
@@ -62,6 +62,21 @@ namespace GPodder.NET
         {
             var response = await Utilities.HttpClient.GetAsync($"{GPodderConfig.BaseApiUrl}/api/2/tag/{tag}/{count}.json");
             return await this.HandleResponseAsync<IEnumerable<Podcast>>(response);
+        }
+
+        /// <summary>
+        /// Retrieve podcast metadata for a podcast.
+        /// </summary>
+        /// <param name="podcastUrl">The url where the podcast can be found.</param>
+        /// <param name="scaleLogo">Size for the logo returned in the <see cref="Podcast.LogoUrl"/>.</param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation. It will contain a <see cref="Podcast"/> if successful.</returns>
+        public async Task<Podcast> GetPodcastData(string podcastUrl, int scaleLogo = 64)
+        {
+            var response = await Utilities.HttpClient.GetAsync(new Uri(
+                $"{GPodderConfig.BaseApiUrl}/api/2/data/podcast.json?" +
+                $"url={podcastUrl}" +
+                $"&scale_logo={scaleLogo}"));
+            return await this.HandleResponseAsync<Podcast>(response);
         }
 
         private async Task<T> HandleResponseAsync<T>(HttpResponseMessage response)
