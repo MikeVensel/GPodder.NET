@@ -79,6 +79,21 @@ namespace GPodder.NET
             return await this.HandleResponseAsync<Podcast>(response);
         }
 
+        /// <summary>
+        /// Retrieve metadata for a podcast episode.
+        /// </summary>
+        /// <param name="podcastUrl">The url where the podcast can be found.</param>
+        /// <param name="episodeUrl">The url where the episode can be found.</param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation. It will contain a <see cref="Episode"/> if successful.</returns>
+        public async Task<Episode> GetPodcastEpisode(string podcastUrl, string episodeUrl)
+        {
+            var response = await Utilities.HttpClient.GetAsync(new Uri(
+                $"{GPodderConfig.BaseApiUrl}/api/2/data/episode.json?" +
+                $"podcast={podcastUrl}" +
+                $"&url={episodeUrl}"));
+            return await this.HandleResponseAsync<Episode>(response);
+        }
+
         private async Task<T> HandleResponseAsync<T>(HttpResponseMessage response)
         {
             response.EnsureSuccessStatusCode();

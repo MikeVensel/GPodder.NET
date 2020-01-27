@@ -109,5 +109,21 @@ namespace GPodder.NET.Tests
                 Assert.IsNotNull(podcast);
             }).GetAwaiter().GetResult();
         }
+
+        /// <summary>
+        /// Tests the <see cref="Directory.GetPodcastEpisode(string, string)"/> method.
+        /// </summary>
+        [TestMethod]
+        public void TestGetEpisodeData()
+        {
+            var podcastUrl = "http://joeroganexp.joerogan.libsynpro.com/rss";
+            var episodeUrl = "http://traffic.libsyn.com/joeroganexp/p1414.mp3";
+            var client = new GPodderClient();
+            Task.Run(async () =>
+            {
+                var episode = await client.Directory.GetPodcastEpisode(podcastUrl, episodeUrl);
+                Assert.IsNotNull(episode);
+            }).GetAwaiter().GetResult();
+        }
     }
 }
