@@ -17,15 +17,11 @@ namespace GPodder.NET
     /// </summary>
     public class Authentication
     {
-        private readonly ConfigurationManager configurationManager;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="Authentication"/> class.
         /// </summary>
-        /// <param name="configurationManager"><see cref="ConfigurationManager"/> for settings required for requests.</param>
-        public Authentication(ConfigurationManager configurationManager)
+        public Authentication()
         {
-            this.configurationManager = configurationManager;
         }
 
         /// <summary>
@@ -36,9 +32,8 @@ namespace GPodder.NET
         /// <returns>A <see cref="Task"/> representing the asynchronous login operation.</returns>
         public async Task Login(string username, string password)
         {
-            var clientConfig = await this.configurationManager.GetConfigTask();
             var byteArray = Encoding.ASCII.GetBytes($"{username}:{password}");
-            var httpRequest = new HttpRequestMessage(HttpMethod.Post, $"{clientConfig.MyGpo.BaseUrl}api/2/auth/{username}/login.json");
+            var httpRequest = new HttpRequestMessage(HttpMethod.Post, $"{GPodderConfig.BaseApiUrl}/api/2/auth/{username}/login.json");
             httpRequest.Headers.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
             var authResponse = await Utilities.HttpClient.SendAsync(httpRequest);
             try
@@ -77,8 +72,7 @@ namespace GPodder.NET
         /// <returns>A <see cref="Task"/> representing the asynchronous logout operation.</returns>
         public async Task Logout(string username)
         {
-            var clientConfig = await this.configurationManager.GetConfigTask();
-            var httpRequest = new HttpRequestMessage(HttpMethod.Post, $"{clientConfig.MyGpo.BaseUrl}api/2/auth/{username}/logout.json");
+            var httpRequest = new HttpRequestMessage(HttpMethod.Post, $"{GPodderConfig.BaseApiUrl}/api/2/auth/{username}/logout.json");
             var logoutResponse = await Utilities.HttpClient.SendAsync(httpRequest);
 
             try

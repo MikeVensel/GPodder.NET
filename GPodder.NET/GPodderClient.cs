@@ -9,16 +9,13 @@ namespace GPodder.NET
     /// </summary>
     public class GPodderClient
     {
-        private readonly ConfigurationManager configurationManager;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="GPodderClient"/> class.
         /// </summary>
         public GPodderClient()
         {
-            this.configurationManager = new ConfigurationManager();
-            this.Authentication = new Authentication(this.configurationManager);
-            this.Directory = new Directory(this.configurationManager);
+            this.Authentication = new Authentication();
+            this.Directory = new Directory();
         }
 
         /// <summary>

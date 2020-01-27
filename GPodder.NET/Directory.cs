@@ -17,15 +17,11 @@ namespace GPodder.NET
     /// </summary>
     public class Directory
     {
-        private readonly ConfigurationManager configurationManager;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="Directory"/> class.
         /// </summary>
-        /// <param name="configurationManager"><see cref="ConfigurationManager"/> for settings required for requests.</param>
-        public Directory(ConfigurationManager configurationManager)
+        public Directory()
         {
-            this.configurationManager = configurationManager;
         }
 
         /// <summary>
@@ -37,8 +33,7 @@ namespace GPodder.NET
         /// <exception cref="JsonException">Thrown if the response content cannot be serialized into the appropriate object.</exception>"
         public async Task<IEnumerable<Tag>> GetTags(int count = 100)
         {
-            var clientConfig = await this.configurationManager.GetConfigTask();
-            var tagsResponse = await Utilities.HttpClient.GetAsync($"{clientConfig.MyGpo.BaseUrl}api/2/tags/{count}.json");
+            var tagsResponse = await Utilities.HttpClient.GetAsync($"{GPodderConfig.BaseApiUrl}/api/2/tags/{count}.json");
             return await this.HandleResponseAsync<IEnumerable<Tag>>(tagsResponse);
         }
 
@@ -51,8 +46,7 @@ namespace GPodder.NET
         /// <exception cref="JsonException">Thrown if the response content cannot be serialized into the appropriate object.</exception>"
         public async Task<IEnumerable<Podcast>> GetTopPodcasts(int number)
         {
-            var clientConfig = await this.configurationManager.GetConfigTask();
-            var response = await Utilities.HttpClient.GetAsync($"{clientConfig.MyGpo.BaseUrl}toplist/{number}.json");
+            var response = await Utilities.HttpClient.GetAsync($"{GPodderConfig.BaseApiUrl}/toplist/{number}.json");
             return await this.HandleResponseAsync<IEnumerable<Podcast>>(response);
         }
 
@@ -66,8 +60,7 @@ namespace GPodder.NET
         /// <exception cref="JsonException">Thrown if the response content cannot be serialized into the appropriate object.</exception>"
         public async Task<IEnumerable<Podcast>> GetPodcastsWithTag(string tag, int count = 100)
         {
-            var clientConfig = await this.configurationManager.GetConfigTask();
-            var response = await Utilities.HttpClient.GetAsync($"{clientConfig.MyGpo.BaseUrl}api/2/tag/{tag}/{count}.json");
+            var response = await Utilities.HttpClient.GetAsync($"{GPodderConfig.BaseApiUrl}/api/2/tag/{tag}/{count}.json");
             return await this.HandleResponseAsync<IEnumerable<Podcast>>(response);
         }
 
