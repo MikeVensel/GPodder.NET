@@ -41,29 +41,33 @@ namespace GPodder.NET
             var httpRequest = new HttpRequestMessage(HttpMethod.Post, $"{clientConfig.MyGpo.BaseUrl}api/2/auth/{username}/login.json");
             httpRequest.Headers.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
             var authResponse = await Utilities.HttpClient.SendAsync(httpRequest);
-            if (authResponse.IsSuccessStatusCode)
+            try
             {
-                if (!authResponse.Headers.TryGetValues("Set-Cookie", out var setCookieValues))
+                authResponse.EnsureSuccessStatusCode();
+            }
+            catch (HttpRequestException)
+            {
+                switch (authResponse.StatusCode)
                 {
-                    // this shouldn't happen but just in case
-                    throw new Exception("Unable to retrieve 'Set-Cookie' header from response.");
+                    case HttpStatusCode.Unauthorized:
+                        // If the URL is accessed without login credentials provided
+                        throw new InvalidCredentialsException("Login credentials were not provided or were invalid.");
+                    case HttpStatusCode.BadRequest:
+                        // If the client provides a cookie, but for a different username than the one given
+                        throw new InvalidSessionIdException("The provided session ID did not belong to the provided user.");
+                    default:
+                        throw;
                 }
+            }
 
+            if (authResponse.Headers.TryGetValues("Set-Cookie", out var setCookieValues))
+            {
                 Utilities.HttpClient.DefaultRequestHeaders.Add("Set-Cookie", setCookieValues);
                 return;
             }
 
-            switch (authResponse.StatusCode)
-            {
-                case HttpStatusCode.Unauthorized:
-                    // If the URL is accessed without login credentials provided
-                    throw new UnauthorizedException("Login credentials were not provided or were invalid.");
-                case HttpStatusCode.BadRequest:
-                    // If the client provides a cookie, but for a different username than the one given
-                    throw new BadRequestException("The provided session ID did not belong to the provided user.");
-                default:
-                    throw new GenericWebResponseException($"An error status code of {authResponse.StatusCode} was returned from gPodder.");
-            }
+            // this shouldn't happen but just in case
+            throw new Exception("Unable to retrieve 'Set-Cookie' header from response.");
         }
 
         /// <summary>
@@ -76,19 +80,23 @@ namespace GPodder.NET
             var clientConfig = await this.configurationManager.GetConfigTask();
             var httpRequest = new HttpRequestMessage(HttpMethod.Post, $"{clientConfig.MyGpo.BaseUrl}api/2/auth/{username}/logout.json");
             var logoutResponse = await Utilities.HttpClient.SendAsync(httpRequest);
-            if (logoutResponse.IsSuccessStatusCode)
+
+            try
             {
-                Utilities.HttpClient.DefaultRequestHeaders.Remove("Set-Cookie");
-                return;
+                logoutResponse.EnsureSuccessStatusCode();
+            }
+            catch (HttpRequestException)
+            {
+                switch (logoutResponse.StatusCode)
+                {
+                    case HttpStatusCode.BadRequest:
+                        throw new InvalidSessionIdException("The provided session ID did not belong to the provided user.");
+                    default:
+                        throw;
+                }
             }
 
-            switch (logoutResponse.StatusCode)
-            {
-                case HttpStatusCode.BadRequest:
-                    throw new BadRequestException("The provided session ID did not belong to the provided user.");
-                default:
-                    throw new GenericWebResponseException($"An error status code of {logoutResponse.StatusCode} was returned from gPodder.");
-            }
+            Utilities.HttpClient.DefaultRequestHeaders.Remove("Set-Cookie");
         }
     }
 }

@@ -11,40 +11,40 @@ namespace GPodder.NET.Exceptions
     /// Exception used to indicate that an http status code of 401 was returned.
     /// </summary>
     [Serializable]
-    public class UnauthorizedException : Exception
+    public class InvalidCredentialsException : Exception
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="UnauthorizedException"/> class.
+        /// Initializes a new instance of the <see cref="InvalidCredentialsException"/> class.
         /// </summary>
-        public UnauthorizedException()
+        public InvalidCredentialsException()
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="UnauthorizedException"/> class.
+        /// Initializes a new instance of the <see cref="InvalidCredentialsException"/> class.
         /// </summary>
         /// <param name="message">Exception message to return.</param>
-        public UnauthorizedException(string message)
+        public InvalidCredentialsException(string message)
             : base(message)
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="UnauthorizedException"/> class.
+        /// Initializes a new instance of the <see cref="InvalidCredentialsException"/> class.
         /// </summary>
         /// <param name="message">Exception message to return.</param>
         /// <param name="innerException">Inner <see cref="Exception"/> to return.</param>
-        public UnauthorizedException(string message, Exception innerException)
+        public InvalidCredentialsException(string message, Exception innerException)
             : base(message, innerException)
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="UnauthorizedException"/> class.
+        /// Initializes a new instance of the <see cref="InvalidCredentialsException"/> class.
         /// </summary>
         /// <param name="info"><see cref="SerializationInfo"/>.</param>
         /// <param name="context"><see cref="StreamingContext"/>.</param>
-        protected UnauthorizedException(SerializationInfo info, StreamingContext context)
+        protected InvalidCredentialsException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
         }
