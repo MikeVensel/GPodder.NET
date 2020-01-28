@@ -16,6 +16,7 @@ namespace GPodder.NET
         {
             this.Authentication = new Authentication();
             this.Directory = new Directory();
+            this.Suggestions = new Suggestions();
         }
 
         /// <summary>
@@ -27,5 +28,10 @@ namespace GPodder.NET
         /// Gets the <see cref="Directory"/> class to make directory requests.
         /// </summary>
         public Directory Directory { get; }
+
+        /// <summary>
+        /// Gets the <see cref="Suggestions"/> class to make suggestion requests.
+        /// </summary>
+        public Suggestions Suggestions { get; }
     }
 }
