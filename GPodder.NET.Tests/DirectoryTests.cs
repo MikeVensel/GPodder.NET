@@ -127,7 +127,7 @@ namespace GPodder.NET.Tests
         }
 
         /// <summary>
-        /// Tests the <see cref="Directory.SearchForPodcasts(string)"/> method.
+        /// Tests the <see cref="Directory.SearchForPodcasts(string, int)"/> method.
         /// </summary>
         [TestMethod]
         public void TestSearchForPodcasts()

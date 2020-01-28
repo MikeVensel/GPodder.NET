@@ -99,6 +99,7 @@ namespace GPodder.NET
         /// search query.
         /// </summary>
         /// <param name="searchQuery">The value for which to search podcasts.</param>
+        /// <param name="scaleLogo">Size for the logo returned in the <see cref="Podcast.LogoUrl"/>.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation. It will contain a <see cref="IEnumerable{Podcast}"/> if successful.</returns>
         public async Task<IEnumerable<Podcast>> SearchForPodcasts(string searchQuery, int scaleLogo = 64)
         {
