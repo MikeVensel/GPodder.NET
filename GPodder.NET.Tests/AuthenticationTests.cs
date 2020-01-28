@@ -5,6 +5,7 @@
 namespace GPodder.NET.Tests
 {
     using System.Threading.Tasks;
+    using Microsoft.Extensions.Configuration;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     /// <summary>
@@ -13,8 +14,17 @@ namespace GPodder.NET.Tests
     [TestClass]
     public class AuthenticationTests
     {
-        private readonly string username = "yourusername";
-        private readonly string password = "yourpassword";
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AuthenticationTests"/> class.
+        /// </summary>
+        public AuthenticationTests()
+        {
+            var configBuilder = new ConfigurationBuilder()
+                .AddUserSecrets<AuthenticationTests>();
+            this.Configuration = configBuilder.Build();
+        }
+
+        private IConfiguration Configuration { get; set; }
 
         /// <summary>
         /// Tests the <see cref="Authentication.Login(string, string)"/> method.
@@ -25,7 +35,7 @@ namespace GPodder.NET.Tests
             var client = new GPodderClient();
             Task.Run(async () =>
             {
-                await client.Authentication.Login(this.username, this.password);
+                await client.Authentication.Login(this.Configuration["GpodderUsername"], this.Configuration["GpodderPassword"]);
             }).GetAwaiter().GetResult();
         }
 
@@ -38,8 +48,8 @@ namespace GPodder.NET.Tests
             var client = new GPodderClient();
             Task.Run(async () =>
             {
-                await client.Authentication.Login(this.username, this.password);
-                await client.Authentication.Logout(this.username);
+                await client.Authentication.Login(this.Configuration["GpodderUsername"], this.Configuration["GPodderPassword"]);
+                await client.Authentication.Logout(this.Configuration["GpodderUsername"]);
             }).GetAwaiter().GetResult();
         }
     }
