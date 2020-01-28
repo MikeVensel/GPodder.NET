@@ -52,12 +52,23 @@ namespace GPodder.NET.Models
         /// Gets or sets the time at which the episode aired.
         /// </summary>
         [JsonPropertyName("released")]
-        public DateTime Released { get; set; }
+        public string ReleasedString { get; set; }
 
         /// <summary>
         /// Gets or sets the gPodder url for the episode.
         /// </summary>
         [JsonPropertyName("mygpo_link")]
         public string MyGpoLink { get; set; }
+
+        /// <summary>
+        /// Gets and sets the <see cref="ReleasedString"/> as a <see cref="DateTime"/>
+        /// </summary>
+        public DateTime Released
+        {
+            get
+            {
+                return DateTime.Parse(this.ReleasedString);
+            }
+        }
     }
 }
