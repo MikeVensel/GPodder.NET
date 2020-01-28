@@ -125,5 +125,20 @@ namespace GPodder.NET.Tests
                 Assert.IsNotNull(episode);
             }).GetAwaiter().GetResult();
         }
+
+        /// <summary>
+        /// Tests the <see cref="Directory.SearchForPodcasts(string)"/> method.
+        /// </summary>
+        [TestMethod]
+        public void TestSearchForPodcasts()
+        {
+            var searchQuery = "joe rogan";
+            var client = new GPodderClient();
+            Task.Run(async () =>
+            {
+                var podcastCollection = await client.Directory.SearchForPodcasts(searchQuery);
+                Assert.IsNotNull(podcastCollection);
+            }).GetAwaiter().GetResult();
+        }
     }
 }

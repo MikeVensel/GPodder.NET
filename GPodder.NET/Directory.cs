@@ -94,6 +94,20 @@ namespace GPodder.NET
             return await this.HandleResponseAsync<Episode>(response);
         }
 
+        /// <summary>
+        /// Retrieve a <see cref="IEnumerable{Podcast}"/> of podcasts that match the 
+        /// search query.
+        /// </summary>
+        /// <param name="searchQuery">The value for which to search podcasts.</param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation. It will contain a <see cref="IEnumerable{Podcast}"/> if successful.</returns>
+        public async Task<IEnumerable<Podcast>> SearchForPodcasts(string searchQuery)
+        {
+            var response = await Utilities.HttpClient.GetAsync(new Uri(
+                $"{GPodderConfig.BaseApiUrl}/search.json?" +
+                $"q={searchQuery}"));
+            return await this.HandleResponseAsync<IEnumerable<Podcast>>(response);
+        }
+
         private async Task<T> HandleResponseAsync<T>(HttpResponseMessage response)
         {
             response.EnsureSuccessStatusCode();
