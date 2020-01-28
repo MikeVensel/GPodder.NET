@@ -117,7 +117,7 @@ namespace GPodder.NET.Tests
         public void TestGetEpisodeData()
         {
             var podcastUrl = "http://joeroganexp.joerogan.libsynpro.com/rss";
-            var episodeUrl = "http://traffic.libsyn.com/joeroganexp/p1414.mp3";
+            var episodeUrl = "http://traffic.libsyn.com/joeroganexp/p1418.mp3?dest-id=19997";
             var client = new GPodderClient();
             Task.Run(async () =>
             {
