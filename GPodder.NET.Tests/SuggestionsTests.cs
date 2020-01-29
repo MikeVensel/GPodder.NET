@@ -14,31 +14,44 @@ namespace GPodder.NET.Tests
     [TestClass]
     public class SuggestionsTests
     {
+        private static string username;
+        private static GPodderClient client;
+
         /// <summary>
-        /// Initializes a new instance of the <see cref="SuggestionsTests"/> class.
+        /// Initializes necessary components for tests.
         /// </summary>
-        public SuggestionsTests()
+        /// <param name="testContext">The <see cref="TestContext"/> for the unit tests.</param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        [ClassInitialize]
+        public static async Task InitTests(TestContext testContext)
         {
             var configBuilder = new ConfigurationBuilder()
                 .AddUserSecrets<AuthenticationTests>();
-            this.Configuration = configBuilder.Build();
+            var configuration = configBuilder.Build();
+            username = configuration["GPodderUsername"];
+            client = new GPodderClient();
+            await client.Authentication.Login(username, configuration["GpodderPassword"]);
         }
 
-        private IConfiguration Configuration { get; set; }
+        /// <summary>
+        /// Cleans up after all tests have run.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the result of the asynchronous operation.</returns>
+        [ClassCleanup]
+        public static async Task CleanUpTests()
+        {
+            await client.Authentication.Logout(username);
+        }
 
         /// <summary>
         /// Tests the <see cref="Suggestions.RetrieveSuggestedPodcasts(int)"/> method.
         /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [TestMethod]
-        public void TestRetrievePodcastSuggestions()
+        public async Task TestRetrievePodcastSuggestions()
         {
-            var client = new GPodderClient();
-            Task.Run(async () =>
-            {
-                await client.Authentication.Login(this.Configuration["GpodderUsername"], this.Configuration["GpodderPassword"]);
-                var podcastCollection = await client.Suggestions.RetrieveSuggestedPodcasts(10);
-                Assert.IsNotNull(podcastCollection);
-            }).GetAwaiter().GetResult();
+            var podcastCollection = await client.Suggestions.RetrieveSuggestedPodcasts(10);
+            Assert.IsNotNull(podcastCollection);
         }
     }
 }

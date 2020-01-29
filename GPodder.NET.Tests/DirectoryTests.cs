@@ -15,130 +15,118 @@ namespace GPodder.NET.Tests
     [TestClass]
     public class DirectoryTests
     {
+        private static GPodderClient client;
+
+        /// <summary>
+        /// Initializes necessary components for tests.
+        /// </summary>
+        /// <param name="testContext">The <see cref="TestContext"/> for the unit tests.</param>
+        [ClassInitialize]
+        public static void InitTests(TestContext testContext)
+        {
+            client = new GPodderClient();
+        }
+
         /// <summary>
         /// Tests the <see cref="Directory.GetTags(int)"/> with the default count.
         /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [TestMethod]
-        public void TestGetTags()
+        public async Task TestGetTags()
         {
-            var client = new GPodderClient();
-            Task.Run(async () =>
-            {
-                var tagsCollection = await client.Directory.GetTags();
-                Assert.IsNotNull(tagsCollection);
-            }).GetAwaiter().GetResult();
+            var tagsCollection = await client.Directory.GetTags();
+            Assert.IsNotNull(tagsCollection);
         }
 
         /// <summary>
         /// Tests the count on the <see cref="Directory.GetTags(int)"/> method to ensure it limits the number of
         /// results.
         /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [TestMethod]
-        public void TestGetTagsCount()
+        public async Task TestGetTagsCount()
         {
             var requestedCount = 5;
-            var client = new GPodderClient();
-            Task.Run(async () =>
-            {
-                var tagsCollection = await client.Directory.GetTags(requestedCount);
-                Assert.IsNotNull(tagsCollection);
-                Assert.IsTrue(tagsCollection.Count() <= requestedCount);
-            }).GetAwaiter().GetResult();
+            var tagsCollection = await client.Directory.GetTags(requestedCount);
+            Assert.IsNotNull(tagsCollection);
+            Assert.IsTrue(tagsCollection.Count() <= requestedCount);
         }
 
         /// <summary>
         /// Tests the <see cref="Directory.GetTopPodcasts(int)"/> method.
         /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [TestMethod]
-        public void TestGetTopPodcasts()
+        public async Task TestGetTopPodcasts()
         {
-            var client = new GPodderClient();
-            Task.Run(async () =>
-            {
-                var topPodcastCollection = await client.Directory.GetTopPodcasts(50);
-                Assert.IsNotNull(topPodcastCollection);
-            }).GetAwaiter().GetResult();
+            var topPodcastCollection = await client.Directory.GetTopPodcasts(50);
+            Assert.IsNotNull(topPodcastCollection);
         }
 
         /// <summary>
         /// Tests the <see cref="Directory.GetPodcastsWithTag(string, int)"/> method.
         /// </summary>
         /// <param name="tag">The tag for which to search for podcasts.</param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         [DataTestMethod]
         [DataRow("information")]
         [DataRow("mac")]
         [DataRow("new")]
         [DataRow("activism")]
-        public void TestGetPodcastsWithTag(string tag)
+        public async Task TestGetPodcastsWithTag(string tag)
         {
-            var client = new GPodderClient();
-            Task.Run(async () =>
-            {
-                var podcastCollection = await client.Directory.GetPodcastsWithTag(tag);
-                Assert.IsNotNull(podcastCollection);
-            }).GetAwaiter().GetResult();
+            var podcastCollection = await client.Directory.GetPodcastsWithTag(tag);
+            Assert.IsNotNull(podcastCollection);
         }
 
         /// <summary>
         /// Tests the count on the <see cref="Directory.GetPodcastsWithTag(string, int)"/> to ensure it limits
         /// the number of results.
         /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [TestMethod]
-        public void TestGetPodcastsWithTagCount()
+        public async Task TestGetPodcastsWithTagCount()
         {
-            var client = new GPodderClient();
-            Task.Run(async () =>
-            {
-                var podcastCollection = await client.Directory.GetPodcastsWithTag("information", count: 1);
-                Assert.IsNotNull(podcastCollection);
-                Assert.IsTrue(podcastCollection.Count() <= 1);
-            }).GetAwaiter().GetResult();
+            var podcastCollection = await client.Directory.GetPodcastsWithTag("information", count: 1);
+            Assert.IsNotNull(podcastCollection);
+            Assert.IsTrue(podcastCollection.Count() <= 1);
         }
 
         /// <summary>
         /// Tests the <see cref="Directory.GetPodcastData(string, int)"/> method.
         /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [TestMethod]
-        public void TestGetPodcastData()
+        public async Task TestGetPodcastData()
         {
             string url = "http://joeroganexp.joerogan.libsynpro.com/rss";
-            var client = new GPodderClient();
-            Task.Run(async () =>
-            {
-                var podcast = await client.Directory.GetPodcastData(url);
-                Assert.IsNotNull(podcast);
-            }).GetAwaiter().GetResult();
+            var podcast = await client.Directory.GetPodcastData(url);
+            Assert.IsNotNull(podcast);
         }
 
         /// <summary>
         /// Tests the <see cref="Directory.GetPodcastEpisode(string, string)"/> method.
         /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [TestMethod]
-        public void TestGetEpisodeData()
+        public async Task TestGetEpisodeData()
         {
             var podcastUrl = "http://joeroganexp.joerogan.libsynpro.com/rss";
             var episodeUrl = "http://traffic.libsyn.com/joeroganexp/p1418.mp3?dest-id=19997";
-            var client = new GPodderClient();
-            Task.Run(async () =>
-            {
-                var episode = await client.Directory.GetPodcastEpisode(podcastUrl, episodeUrl);
-                Assert.IsNotNull(episode);
-            }).GetAwaiter().GetResult();
+            var episode = await client.Directory.GetPodcastEpisode(podcastUrl, episodeUrl);
+            Assert.IsNotNull(episode);
         }
 
         /// <summary>
         /// Tests the <see cref="Directory.SearchForPodcasts(string, int)"/> method.
         /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [TestMethod]
-        public void TestSearchForPodcasts()
+        public async Task TestSearchForPodcasts()
         {
             var searchQuery = "joe rogan";
-            var client = new GPodderClient();
-            Task.Run(async () =>
-            {
-                var podcastCollection = await client.Directory.SearchForPodcasts(searchQuery);
-                Assert.IsNotNull(podcastCollection);
-            }).GetAwaiter().GetResult();
+            var podcastCollection = await client.Directory.SearchForPodcasts(searchQuery);
+            Assert.IsNotNull(podcastCollection);
         }
     }
 }
