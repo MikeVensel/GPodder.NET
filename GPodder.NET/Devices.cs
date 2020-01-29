@@ -7,6 +7,8 @@ namespace GPodder.NET
     using System;
     using System.Collections.Generic;
     using System.Net.Http;
+    using System.Net.Http.Headers;
+    using System.Text;
     using System.Text.Json;
     using System.Threading.Tasks;
     using GPodder.NET.Models;
@@ -39,6 +41,24 @@ namespace GPodder.NET
             response.EnsureSuccessStatusCode();
             var contentStream = await response.Content.ReadAsStreamAsync();
             return await JsonSerializer.DeserializeAsync<IEnumerable<Device>>(contentStream);
+        }
+
+        /// <summary>
+        /// Update metadata for the provided device.
+        /// </summary>
+        /// <param name="username">Username for the gPodder account.</param>
+        /// <param name="updatedDevice">A existing <see cref="Device"/> with a valid <see cref="Device.Id"/>.</param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        public async Task UpdateDeviceData(string username, Device updatedDevice)
+        {
+            var contentString = JsonSerializer.Serialize(updatedDevice);
+            var contentByteArray = Encoding.UTF8.GetBytes(contentString);
+            var httpContent = new ByteArrayContent(contentByteArray);
+            httpContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+            var response = await Utilities.HttpClient.PostAsync(
+                new Uri($"{GPodderConfig.BaseApiUrl}/api/2/devices/{username}/{updatedDevice.Id}.json"),
+                httpContent);
+            response.EnsureSuccessStatusCode();
         }
     }
 }
