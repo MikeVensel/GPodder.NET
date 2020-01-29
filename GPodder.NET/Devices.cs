@@ -4,12 +4,12 @@
 
 namespace GPodder.NET
 {
-    using GPodder.NET.Models;
     using System;
     using System.Collections.Generic;
     using System.Net.Http;
     using System.Text.Json;
     using System.Threading.Tasks;
+    using GPodder.NET.Models;
 
     /// <summary>
     /// Handles retrieving user device data from gPodder.
@@ -31,7 +31,7 @@ namespace GPodder.NET
         /// <param name="username">Username for the gPodder account.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation. It will contain a <see cref="IEnumerable{Device}"/> if successful.</returns>
         /// <exception cref="HttpRequestException">Thrown if the request is not successful.</exception>
-        /// <exception cref="JsonException">Thrown if the response content cannot be serialized into the appropriate object.</exception>
+        /// <exception cref="JsonException">Thrown if the response content cannot be serialized into a <see cref="IEnumerable{Device}"/>.</exception>
         public async Task<IEnumerable<Device>> ListDevices(string username)
         {
             var response = await Utilities.HttpClient.GetAsync(new Uri(

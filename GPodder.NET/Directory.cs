@@ -28,9 +28,9 @@ namespace GPodder.NET
         /// Retrieves available tag metadata from gPodder.
         /// </summary>
         /// <param name="count">The number of tags to return in the query.</param>
-        /// <returns>A <see cref="Task"/> representing the asynchronous operation. It will contain an <see cref="IEnumerable{GPodderTag}"/> if successful.</returns>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation. It will contain an <see cref="IEnumerable{Tag}"/> if successful.</returns>
         /// <exception cref="HttpRequestException">Thrown if the request is not successful.</exception>"
-        /// <exception cref="JsonException">Thrown if the response content cannot be serialized into the appropriate object.</exception>"
+        /// <exception cref="JsonException">Thrown if the response content cannot be serialized into a <see cref="IEnumerable{Tag}"/>.</exception>
         public async Task<IEnumerable<Tag>> GetTags(int count = 100)
         {
             var tagsResponse = await Utilities.HttpClient.GetAsync($"{GPodderConfig.BaseApiUrl}/api/2/tags/{count}.json");
@@ -43,7 +43,7 @@ namespace GPodder.NET
         /// <param name="number">The number of podcasts to return.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation. It will contain an <see cref="IEnumerable{Podcast}"/> if successful.</returns>
         /// <exception cref="HttpRequestException">Thrown if the request is not successful.</exception>"
-        /// <exception cref="JsonException">Thrown if the response content cannot be serialized into the appropriate object.</exception>"
+        /// <exception cref="JsonException">Thrown if the response content cannot be serialized into a <see cref="IEnumerable{Podcast}"/>.</exception>
         public async Task<IEnumerable<Podcast>> GetTopPodcasts(int number)
         {
             var response = await Utilities.HttpClient.GetAsync($"{GPodderConfig.BaseApiUrl}/toplist/{number}.json");
@@ -57,7 +57,7 @@ namespace GPodder.NET
         /// <param name="count">The number of podcasts to return in the query.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation. It will contain an <see cref="IEnumerable{Podcast}"/> if successful.</returns>
         /// <exception cref="HttpRequestException">Thrown if the request is not successful.</exception>"
-        /// <exception cref="JsonException">Thrown if the response content cannot be serialized into the appropriate object.</exception>"
+        /// <exception cref="JsonException">Thrown if the response content cannot be serialized into a <see cref="IEnumerable{Podcast}"/>.</exception>
         public async Task<IEnumerable<Podcast>> GetPodcastsWithTag(string tag, int count = 100)
         {
             var response = await Utilities.HttpClient.GetAsync($"{GPodderConfig.BaseApiUrl}/api/2/tag/{tag}/{count}.json");
@@ -70,6 +70,8 @@ namespace GPodder.NET
         /// <param name="podcastUrl">The url where the podcast can be found.</param>
         /// <param name="scaleLogo">Size for the logo returned in the <see cref="Podcast.LogoUrl"/>.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation. It will contain a <see cref="Podcast"/> if successful.</returns>
+        /// <exception cref="HttpRequestException">Thrown if the request is not successful.</exception>"
+        /// <exception cref="JsonException">Thrown if the response content cannot be serialized into a <see cref="Podcast"/>.</exception>
         public async Task<Podcast> GetPodcastData(string podcastUrl, int scaleLogo = 64)
         {
             var response = await Utilities.HttpClient.GetAsync(new Uri(
@@ -85,6 +87,8 @@ namespace GPodder.NET
         /// <param name="podcastUrl">The url where the podcast can be found.</param>
         /// <param name="episodeUrl">The url where the episode can be found.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation. It will contain a <see cref="Episode"/> if successful.</returns>
+        /// <exception cref="HttpRequestException">Thrown if the request is not successful.</exception>"
+        /// <exception cref="JsonException">Thrown if the response content cannot be serialized into a <see cref="Episode"/>.</exception>
         public async Task<Episode> GetPodcastEpisode(string podcastUrl, string episodeUrl)
         {
             var response = await Utilities.HttpClient.GetAsync(new Uri(
@@ -101,6 +105,8 @@ namespace GPodder.NET
         /// <param name="searchQuery">The value for which to search podcasts.</param>
         /// <param name="scaleLogo">Size for the logo returned in the <see cref="Podcast.LogoUrl"/>.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation. It will contain a <see cref="IEnumerable{Podcast}"/> if successful.</returns>
+        /// <exception cref="HttpRequestException">Thrown if the request is not successful.</exception>"
+        /// <exception cref="JsonException">Thrown if the response content cannot be serialized into a <see cref="IEnumerable{Podcast}"/>.</exception>
         public async Task<IEnumerable<Podcast>> SearchForPodcasts(string searchQuery, int scaleLogo = 64)
         {
             var response = await Utilities.HttpClient.GetAsync(new Uri(

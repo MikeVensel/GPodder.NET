@@ -30,6 +30,9 @@ namespace GPodder.NET
         /// <param name="username">Username for the gPodder account.</param>
         /// <param name="password">Password for the gPodder account.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous login operation.</returns>
+        /// <exception cref="InvalidCredentialsException">Thrown when the provided credentials were invalid.</exception>
+        /// <exception cref="InvalidSessionIdException">Thrown when the provided session ID does not match the provided user.</exception>
+        /// <exception cref="HttpRequestException">Thrown if any other error occurs when making the login request.</exception>
         public async Task Login(string username, string password)
         {
             var byteArray = Encoding.ASCII.GetBytes($"{username}:{password}");
@@ -70,6 +73,8 @@ namespace GPodder.NET
         /// </summary>
         /// <param name="username">Username for the gPodder account.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous logout operation.</returns>
+        /// <exception cref="InvalidSessionIdException">Thrown when the provided session ID does not match the provided user.</exception>
+        /// <exception cref="HttpRequestException">Thrown if any other error occurs when making the login request.</exception>
         public async Task Logout(string username)
         {
             var httpRequest = new HttpRequestMessage(HttpMethod.Post, $"{GPodderConfig.BaseApiUrl}/api/2/auth/{username}/logout.json");
