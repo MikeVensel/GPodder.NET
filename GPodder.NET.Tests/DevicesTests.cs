@@ -4,8 +4,10 @@
 
 namespace GPodder.NET.Tests
 {
+    using System;
     using System.Linq;
     using System.Threading.Tasks;
+    using GPodder.NET.Models;
     using Microsoft.Extensions.Configuration;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -57,6 +59,28 @@ namespace GPodder.NET.Tests
             {
                 Assert.IsFalse(string.IsNullOrEmpty(device.Id));
             }
+        }
+
+        /// <summary>
+        /// Tests the <see cref="Devices.UpdateDeviceData(string, Device)"/> method
+        /// when creating a new device.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [TestMethod]
+        public async Task TestCreateDevice()
+        {
+            var deviceCollection = await client.Devices.ListDevices(username);
+            var deviceCount = deviceCollection.Count();
+            var newDevice = new Device()
+            {
+                Id = Guid.NewGuid().ToString(),
+                Caption = "Test New Laptop",
+                Type = "laptop",
+            };
+
+            await client.Devices.UpdateDeviceData(username, newDevice);
+            deviceCollection = await client.Devices.ListDevices(username);
+            Assert.IsTrue(deviceCollection.Count() == (deviceCount + 1));
         }
 
         /// <summary>
