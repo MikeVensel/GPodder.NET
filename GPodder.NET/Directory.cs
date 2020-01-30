@@ -99,7 +99,7 @@ namespace GPodder.NET
         }
 
         /// <summary>
-        /// Retrieve a <see cref="IEnumerable{Podcast}"/> of podcasts that match the 
+        /// Retrieve a <see cref="IEnumerable{Podcast}"/> of podcasts that match the
         /// search query.
         /// </summary>
         /// <param name="searchQuery">The value for which to search podcasts.</param>
