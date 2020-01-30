@@ -61,7 +61,7 @@ namespace GPodder.NET.Models
         public string MyGpoLink { get; set; }
 
         /// <summary>
-        /// Gets and sets the <see cref="ReleasedString"/> as a <see cref="DateTime"/>
+        /// Gets and sets the <see cref="ReleasedString"/> as a <see cref="DateTime"/>.
         /// </summary>
         public DateTime Released
         {
