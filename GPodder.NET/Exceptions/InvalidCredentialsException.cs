@@ -1,4 +1,4 @@
-﻿// <copyright file="UnauthorizedException.cs" company="MikeVensel">
+﻿// <copyright file="InvalidCredentialsException.cs" company="MikeVensel">
 // Copyright (c) MikeVensel. All rights reserved.
 // </copyright>
 

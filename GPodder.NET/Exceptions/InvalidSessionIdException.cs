@@ -1,4 +1,8 @@
-﻿namespace GPodder.NET.Exceptions
+﻿// <copyright file="InvalidSessionIdException.cs" company="MikeVensel">
+// Copyright (c) MikeVensel. All rights reserved.
+// </copyright>
+
+namespace GPodder.NET.Exceptions
 {
     using System;
     using System.Runtime.Serialization;
@@ -21,14 +25,19 @@
         /// </summary>
         /// <param name="message">Exception message to return.</param>
         public InvalidSessionIdException(string message)
-            : base(message) { }
+            : base(message)
+        {
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="InvalidSessionIdException"/> class.
         /// </summary>
         /// <param name="message">Exception message to return.</param>
         /// <param name="inner">Inner <see cref="Exception"/> to return.</param>
-        public InvalidSessionIdException(string message, Exception inner) : base(message, inner) { }
+        public InvalidSessionIdException(string message, Exception inner)
+            : base(message, inner)
+        {
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="InvalidSessionIdException"/> class.
@@ -38,6 +47,8 @@
         protected InvalidSessionIdException(
           System.Runtime.Serialization.SerializationInfo info,
           System.Runtime.Serialization.StreamingContext context)
-            : base(info, context) { }
+            : base(info, context)
+        {
+        }
     }
 }

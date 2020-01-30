@@ -1,4 +1,8 @@
-﻿namespace GPodder.NET.Models
+﻿// <copyright file="Tag.cs" company="MikeVensel">
+// Copyright (c) MikeVensel. All rights reserved.
+// </copyright>
+
+namespace GPodder.NET.Models
 {
     using System.Text.Json.Serialization;
 
