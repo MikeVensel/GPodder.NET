@@ -60,5 +60,25 @@ namespace GPodder.NET
                 httpContent);
             response.EnsureSuccessStatusCode();
         }
+
+        /// <summary>
+        /// Retrieves updates for the device.
+        /// </summary>
+        /// <param name="username">Username for the gPodder account.</param>
+        /// <param name="deviceId">The device ID for the device.</param>
+        /// <param name="lastUpdated">A <see cref="DateTime"/> representing the last time the device was updated.</param>
+        /// <param name="includeActions">If set to true, an action property will be attached to the <see cref="DeviceUpdates.EpisodeUpdates"/> representing the latest action reported for the episode.</param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation. It will contain a <see cref="DeviceUpdates"/> if successful.</returns>
+        public async Task<DeviceUpdates> GetDeviceUpdates(string username, string deviceId, DateTime lastUpdated, bool includeActions = false)
+        {
+            // GET /api/2/updates/(username)/(deviceid).json
+            var response = await Utilities.HttpClient.GetAsync(
+                new Uri($"{GPodderConfig.BaseApiUrl}/api/2/updates/{username}/{deviceId}.json" +
+                $"?since={lastUpdated.ToUniversalTime().ToString()}" +
+                $"&include_actions={includeActions}"));
+            response.EnsureSuccessStatusCode();
+            var contentStream = await response.Content.ReadAsStreamAsync();
+            return await JsonSerializer.DeserializeAsync<DeviceUpdates>(contentStream);
+        }
     }
 }
