@@ -29,7 +29,7 @@ namespace GPodder.NET.Tests
         public static async Task InitTests(TestContext testContext)
         {
             var configBuilder = new ConfigurationBuilder()
-                .AddUserSecrets<AuthenticationTests>();
+                .AddUserSecrets<DevicesTests>();
             var configuration = configBuilder.Build();
             username = configuration["GpodderUsername"];
             client = new GPodderClient();
@@ -101,6 +101,21 @@ namespace GPodder.NET.Tests
             Assert.IsTrue(deviceCollection.Any(d => d.Caption == updatedDevice.Caption));
             updatedDevice.Caption = currentCaption;
             await client.Devices.UpdateDeviceData(username, updatedDevice);
+        }
+
+        /// <summary>
+        /// Tests the <see cref="Devices.GetDeviceUpdates(string, string, DateTime, bool)"/> method.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [TestMethod]
+        public async Task TestGetDeviceUpdates()
+        {
+            var deviceCollection = await client.Devices.ListDevices(username);
+
+            // todo setup a device for testing
+            var device = deviceCollection.First(d => d.Caption.Contains("PLACEHOLDER"));
+            var lastDateChecked = new DateTime(2020, 1, 31);
+            var deviceUpdates = await client.Devices.GetDeviceUpdates(username, device.Id, lastDateChecked, true);
         }
     }
 }
