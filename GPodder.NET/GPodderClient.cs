@@ -18,6 +18,7 @@ namespace GPodder.NET
             this.Directory = new Directory();
             this.Suggestions = new Suggestions();
             this.Devices = new Devices();
+            this.Subscriptions = new Subscriptions();
         }
 
         /// <summary>
@@ -39,5 +40,10 @@ namespace GPodder.NET
         /// Gets the <see cref="Devices"/> class to make device requests.
         /// </summary>
         public Devices Devices { get; }
+
+        /// <summary>
+        /// Gets the <see cref="Subscriptions"/> class to make subscription requests.
+        /// </summary>
+        public Subscriptions Subscriptions { get; }
     }
 }
