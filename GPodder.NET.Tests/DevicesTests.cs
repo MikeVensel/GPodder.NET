@@ -73,7 +73,7 @@ namespace GPodder.NET.Tests
             var deviceCount = deviceCollection.Count();
             var newDevice = new Device()
             {
-                Id = Guid.NewGuid().ToString(),
+                Id = "gPodder.NET-test",
                 Caption = "Test New Laptop",
                 Type = "laptop",
             };
