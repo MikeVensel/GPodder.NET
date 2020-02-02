@@ -1,4 +1,8 @@
-﻿namespace GPodder.NET.Exceptions
+﻿// <copyright file="InvalidDeviceIdException.cs" company="MikeVensel">
+// Copyright (c) MikeVensel. All rights reserved.
+// </copyright>
+
+namespace GPodder.NET.Exceptions
 {
     using System;
     using System.Runtime.Serialization;
