@@ -38,7 +38,7 @@ namespace GPodder.NET.Tests
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         [ClassCleanup]
-        public async Task CleanUpTests()
+        public static async Task CleanUpTests()
         {
             await client.Authentication.Logout(username);
         }
@@ -50,7 +50,8 @@ namespace GPodder.NET.Tests
         [TestMethod]
         public async Task TestGetAllSubscriptions()
         {
-            await client.Subscriptions.GetAllSubscriptions(username);
+            var podcastSubscriptions = await client.Subscriptions.GetAllSubscriptions(username);
+            Assert.IsNotNull(podcastSubscriptions);
         }
     }
 }
