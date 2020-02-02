@@ -4,7 +4,9 @@
 
 namespace GPodder.NET.Tests
 {
+    using System.IO;
     using System.Threading.Tasks;
+    using GPodder.NET.Enumerations;
     using Microsoft.Extensions.Configuration;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -46,12 +48,38 @@ namespace GPodder.NET.Tests
         /// <summary>
         /// Tests the <see cref="Subscriptions.GetAllSubscriptions(string)"/> method.
         /// </summary>
-        /// <returns> <see cref="Task"/> representing the asynchronous unit test.</returns>
+        /// <returns><see cref="Task"/> representing the asynchronous unit test.</returns>
         [TestMethod]
         public async Task TestGetAllSubscriptions()
         {
             var podcastSubscriptions = await client.Subscriptions.GetAllSubscriptions(username);
             Assert.IsNotNull(podcastSubscriptions);
+        }
+
+        /// <summary>
+        /// Tests the <see cref="Subscriptions.GetDeviceSubscriptions(string, string)"/> method.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [TestMethod]
+        public async Task TestGetDeviceSubscriptions()
+        {
+            var deviceId = "gPodder.NET-test";
+            var podcastSubscriptions = await client.Subscriptions.GetDeviceSubscriptions(username, deviceId);
+            Assert.IsNotNull(podcastSubscriptions);
+        }
+
+        /// <summary>
+        /// Tests the <see cref="Subscriptions.GetDeviceSubscriptions(string, string)"/> method.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [TestMethod]
+        public async Task TestUploadDeviceSubscriptions()
+        {
+            var deviceId = "gPodder.NET-test";
+            var podcastSubscriptions = await client.Subscriptions.GetDeviceSubscriptions(username, deviceId);
+            using var stream = File.Open("/Users/michaelvensel/Downloads/antennapod-feeds.opml", FileMode.Open);
+            await client.Subscriptions.UploadSubscriptionsOfDevice(username, deviceId, SubUploadFormat.OPML, stream);
+            podcastSubscriptions = await client.Subscriptions.GetDeviceSubscriptions(username, deviceId);
         }
     }
 }
