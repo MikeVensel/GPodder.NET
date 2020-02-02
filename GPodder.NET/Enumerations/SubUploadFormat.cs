@@ -1,4 +1,4 @@
-﻿// <copyright file="Format.cs" company="MikeVensel">
+﻿// <copyright file="SubUploadFormat.cs" company="MikeVensel">
 // Copyright (c) MikeVensel. All rights reserved.
 // </copyright>
 
