@@ -87,6 +87,8 @@ namespace GPodder.NET
                         throw new InvalidDeviceIdException("Invalid device ID");
                     case HttpStatusCode.BadRequest:
                         throw new InvalidFormatException("The gPodder server did not accept the format provided.");
+                    default:
+                        throw;
                 }
             }
         }
