@@ -41,12 +41,12 @@ namespace GPodder.NET
         /// </summary>
         /// <param name="username">Username for the gPodder account.</param>
         /// <param name="deviceId">The device ID for the device.</param>
-        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        public async Task<IEnumerable<Podcast>> GetDeviceSubscriptions(string username, string deviceId)
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation. It will contain a <see cref="IEnumerable{String}"/> if successful.</returns>
+        public async Task<IEnumerable<string>> GetDeviceSubscriptions(string username, string deviceId)
         {
             var response = await Utilities.HttpClient.GetAsync(
                 new Uri($"{GPodderConfig.BaseApiUrl}/subscriptions/{username}/{deviceId}.json"));
-            return await this.HandleResponseAsync<IEnumerable<Podcast>>(response);
+            return await this.HandleResponseAsync<IEnumerable<string>>(response);
         }
 
         /// <summary>
@@ -61,16 +61,17 @@ namespace GPodder.NET
         {
             var streamContent = new StreamContent(stream);
             var response = await Utilities.HttpClient.PutAsync(
-                new Uri($"{GPodderConfig.BaseApiUrl}/subscriptions/{username}/{deviceId}.{format.ToString()}"),
+                new Uri($"{GPodderConfig.BaseApiUrl}/subscriptions/{username}/{deviceId}.{format.ToString().ToLower()}"),
                 streamContent);
-            var handledResponse = await this.HandleResponseAsync<string>(response);
-            if (!string.IsNullOrEmpty(handledResponse))
+            this.HandleResponseErrors(response);
+            var contentString = await response.Content.ReadAsStringAsync();
+            if (!string.IsNullOrEmpty(contentString))
             {
-                throw new Exception(handledResponse);
+                throw new Exception(contentString);
             }
         }
 
-        private async Task<T> HandleResponseAsync<T>(HttpResponseMessage response)
+        private void HandleResponseErrors(HttpResponseMessage response)
         {
             try
             {
@@ -88,7 +89,11 @@ namespace GPodder.NET
                         throw new InvalidFormatException("The gPodder server did not accept the format provided.");
                 }
             }
+        }
 
+        private async Task<T> HandleResponseAsync<T>(HttpResponseMessage response)
+        {
+            this.HandleResponseErrors(response);
             var contentStream = await response.Content.ReadAsStreamAsync();
             return await JsonSerializer.DeserializeAsync<T>(contentStream);
         }
