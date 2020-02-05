@@ -4,7 +4,9 @@
 
 namespace GPodder.NET.Tests
 {
+    using System;
     using System.IO;
+    using System.Linq;
     using System.Threading.Tasks;
     using GPodder.NET.Enumerations;
     using Microsoft.Extensions.Configuration;
@@ -76,10 +78,18 @@ namespace GPodder.NET.Tests
         public async Task TestUploadDeviceSubscriptions()
         {
             var deviceId = "gPodder.NET-test";
-            var podcastSubscriptions = await client.Subscriptions.GetDeviceSubscriptions(username, deviceId);
-            using var stream = File.Open("/Users/michaelvensel/Downloads/antennapod-feeds.opml", FileMode.Open);
-            await client.Subscriptions.UploadSubscriptionsOfDevice(username, deviceId, SubUploadFormat.OPML, stream);
-            podcastSubscriptions = await client.Subscriptions.GetDeviceSubscriptions(username, deviceId);
+            var podcastsBeforeUpload = await client.Subscriptions.GetDeviceSubscriptions(username, deviceId);
+
+            // todo handle this either by providing a sample file as a resource or just creating an in memory stream here with test data.
+            var testFilePath = Path.Combine(
+                                            Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                                            "Downloads",
+                                            "antennapod-feeds.opml");
+            using var testFileStream = File.Open(testFilePath, FileMode.Open);
+            await client.Subscriptions.UploadSubscriptionsOfDevice(username, deviceId, SubUploadFormat.OPML, testFileStream);
+            var podcastsAfterUpload = await client.Subscriptions.GetDeviceSubscriptions(username, deviceId);
+            Assert.IsNotNull(podcastsAfterUpload);
+            Assert.IsTrue(podcastsAfterUpload.Count() >= podcastsBeforeUpload.Count());
         }
     }
 }
