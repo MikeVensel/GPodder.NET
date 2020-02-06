@@ -5,10 +5,12 @@
 namespace GPodder.NET.Tests
 {
     using System;
+    using System.Collections.Generic;
     using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
     using GPodder.NET.Enumerations;
+    using GPodder.NET.Models;
     using Microsoft.Extensions.Configuration;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -90,6 +92,26 @@ namespace GPodder.NET.Tests
             var podcastsAfterUpload = await client.Subscriptions.GetDeviceSubscriptions(username, deviceId);
             Assert.IsNotNull(podcastsAfterUpload);
             Assert.IsTrue(podcastsAfterUpload.Count() >= podcastsBeforeUpload.Count());
+        }
+
+        /// <summary>
+        /// Tests the <see cref="Subscriptions.UploadDeviceSubscriptionChanges(string, string, Models.SubscriptionChanges)"/>.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [TestMethod]
+        public async Task TestUploadDeviceSubscriptionChanges()
+        {
+            var deviceId = "gPodder.NET-test";
+            var testSubscriptionChanges = new SubscriptionChanges
+            {
+                Add = new List<string>()
+                {
+                    "https://2bears1cave.libsyn.com/rss",
+                },
+            };
+
+            var updatedSubscriptions = await client.Subscriptions.UploadDeviceSubscriptionChanges(username, deviceId, testSubscriptionChanges);
+            Assert.IsNotNull(updatedSubscriptions);
         }
     }
 }

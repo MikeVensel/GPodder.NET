@@ -71,6 +71,40 @@ namespace GPodder.NET
             }
         }
 
+        /// <summary>
+        /// Upload changes to the subscriptions on the device to gPodder.
+        /// </summary>
+        /// <param name="username">Username for the gPodder account.</param>
+        /// <param name="deviceId">The device ID for the device.</param>
+        /// <param name="subscriptionChanges">A <see cref="SubscriptionChanges"/> of the subscription changes for the device.</param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation. It will contain a <see cref="UpdatedDeviceSubscriptions"/> object if successful.</returns>
+        public async Task<UpdatedDeviceSubscriptions> UploadDeviceSubscriptionChanges(string username, string deviceId, SubscriptionChanges subscriptionChanges)
+        {
+            var subChangesString = JsonSerializer.Serialize(subscriptionChanges);
+            var httpContent = new StringContent(subChangesString);
+            var response = await Utilities.HttpClient.PostAsync(
+                new Uri($"{GPodderConfig.BaseApiUrl}/api/2/subscriptions/{username}/{deviceId}.json"),
+                httpContent);
+            try
+            {
+                response.EnsureSuccessStatusCode();
+            }
+            catch (HttpRequestException)
+            {
+                switch (response.StatusCode)
+                {
+                    case HttpStatusCode.BadRequest:
+                        throw new UpdateSubscriptionConflictException();
+                    default:
+                        throw;
+                }
+            }
+
+            // todo create the object for the returned device sub updates and deserialize it here.
+            var contentStream = await response.Content.ReadAsStreamAsync();
+            return await JsonSerializer.DeserializeAsync<UpdatedDeviceSubscriptions>(contentStream);
+        }
+
         private void HandleResponseErrors(HttpResponseMessage response)
         {
             try
