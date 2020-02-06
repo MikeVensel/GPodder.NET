@@ -12,11 +12,11 @@ namespace GPodder.NET
         /// <summary>
         /// The base url for gPodder API requests.
         /// </summary>
-        public static string BaseApiUrl = "https://gpodder.net";
+        public const string BaseApiUrl = "https://gpodder.net";
 
         /// <summary>
         /// The base feed url for gPodder.
         /// </summary>
-        public static string BaseFeedUrl = "http://feeds.gpodder.net";
+        public const string BaseFeedUrl = "http://feeds.gpodder.net";
     }
 }
