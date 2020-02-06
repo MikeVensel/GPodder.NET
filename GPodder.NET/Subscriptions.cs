@@ -100,7 +100,6 @@ namespace GPodder.NET
                 }
             }
 
-            // todo create the object for the returned device sub updates and deserialize it here.
             var contentStream = await response.Content.ReadAsStreamAsync();
             return await JsonSerializer.DeserializeAsync<UpdatedDeviceSubscriptions>(contentStream);
         }
