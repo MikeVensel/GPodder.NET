@@ -32,5 +32,12 @@ namespace GPodder.NET.Models
         /// </summary>
         [JsonPropertyName("remove")]
         public IEnumerable<string> Remove { get; set; }
+
+        /// <summary>
+        /// Gets or sets the timestamp used by gPodder to determine when
+        /// the device asked for changes last.
+        /// </summary>
+        [JsonPropertyName("timestamp")]
+        public int Timestamp { get; set; }
     }
 }

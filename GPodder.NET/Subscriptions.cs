@@ -50,6 +50,21 @@ namespace GPodder.NET
         }
 
         /// <summary>
+        /// Retrieves device subscription changes since the timestamp provided.
+        /// </summary>
+        /// <param name="username">Username for the gPodder account.</param>
+        /// <param name="deviceId">The device ID for the device.</param>
+        /// <param name="sinceTimeStamp">Timestamp previously returned by gPodder which indicates when last this device checked for updates.</param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.It will contain a <see cref="SubscriptionChanges"/> object if successful.</returns>
+        public async Task<SubscriptionChanges> GetSubscriptionChanges(string username, string deviceId, int sinceTimeStamp = 0)
+        {
+            var response = await Utilities.HttpClient.GetAsync(
+                new Uri($"{GPodderConfig.BaseApiUrl}/api/2/subscriptions/{username}/{deviceId}.json" +
+                $"?since={sinceTimeStamp}"));
+            return await this.HandleResponseAsync<SubscriptionChanges>(response);
+        }
+
+        /// <summary>
         /// Upload the current subscription list of the given user to the server.
         /// </summary>
         /// <param name="username">Username for the gPodder account.</param>
