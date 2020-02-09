@@ -20,6 +20,7 @@ namespace GPodder.NET.Tests
     [TestClass]
     public class SubscriptionsTests
     {
+        private const string DeviceId = "gPodder.NET-test";
         private static string username;
         private static GPodderClient client;
 
@@ -67,9 +68,25 @@ namespace GPodder.NET.Tests
         [TestMethod]
         public async Task TestGetDeviceSubscriptions()
         {
-            var deviceId = "gPodder.NET-test";
-            var podcastSubscriptions = await client.Subscriptions.GetDeviceSubscriptions(username, deviceId);
+            var podcastSubscriptions = await client.Subscriptions.GetDeviceSubscriptions(username, DeviceId);
             Assert.IsNotNull(podcastSubscriptions);
+        }
+
+        /// <summary>
+        /// Tests the <see cref="Subscriptions.GetSubscriptionChanges(string, string, int)"/> method.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [TestMethod]
+        public async Task TestGetDeviceSubscriptionUpdates()
+        {
+            var deviceSubUpdates = await client.Subscriptions.GetSubscriptionChanges(username, DeviceId);
+            Assert.IsNotNull(deviceSubUpdates);
+
+            // Ensure that get subscriptions using the timestamp we just received returns no changes as it should.
+            deviceSubUpdates = await client.Subscriptions.GetSubscriptionChanges(username, DeviceId, deviceSubUpdates.Timestamp);
+            Assert.IsNotNull(deviceSubUpdates);
+            Assert.IsTrue(deviceSubUpdates.Add.Count() == 0);
+            Assert.IsTrue(deviceSubUpdates.Remove.Count() == 0);
         }
 
         /// <summary>
