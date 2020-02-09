@@ -19,6 +19,7 @@ namespace GPodder.NET
             this.Suggestions = new Suggestions();
             this.Devices = new Devices();
             this.Subscriptions = new Subscriptions();
+            this.DeviceSync = new DeviceSync();
         }
 
         /// <summary>
@@ -45,5 +46,10 @@ namespace GPodder.NET
         /// Gets the <see cref="Subscriptions"/> class to make subscription requests.
         /// </summary>
         public Subscriptions Subscriptions { get; }
+
+        /// <summary>
+        /// Gets the <see cref="DeviceSync"/> class to make device sync requests.
+        /// </summary>
+        public DeviceSync DeviceSync { get; }
     }
 }
