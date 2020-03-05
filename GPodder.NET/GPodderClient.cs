@@ -20,6 +20,7 @@ namespace GPodder.NET
             this.Devices = new Devices();
             this.Subscriptions = new Subscriptions();
             this.DeviceSync = new DeviceSync();
+            this.EpisodeActions = new EpisodeActions();
         }
 
         /// <summary>
@@ -51,5 +52,10 @@ namespace GPodder.NET
         /// Gets the <see cref="DeviceSync"/> class to make device sync requests.
         /// </summary>
         public DeviceSync DeviceSync { get; }
+
+        /// <summary>
+        /// Gets the <see cref="EpisodeActions"/> class to make episode action requests.
+        /// </summary>
+        public EpisodeActions EpisodeActions { get; }
     }
 }
