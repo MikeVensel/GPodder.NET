@@ -17,26 +17,31 @@ namespace GPodder.NET
     /// </summary>
     public class Authentication
     {
+        private string username;
+        private string password;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Authentication"/> class.
         /// </summary>
-        public Authentication()
+        /// <param name="username">Username for the gPodder account.</param>
+        /// <param name="password">Password for the gPodder account.</param>
+        public Authentication(string username, string password)
         {
+            this.username = username;
+            this.password = password;
         }
 
         /// <summary>
         /// Log into gPodder.
         /// </summary>
-        /// <param name="username">Username for the gPodder account.</param>
-        /// <param name="password">Password for the gPodder account.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous login operation.</returns>
         /// <exception cref="InvalidCredentialsException">Thrown when the provided credentials were invalid.</exception>
         /// <exception cref="InvalidSessionIdException">Thrown when the provided session ID does not match the provided user.</exception>
         /// <exception cref="HttpRequestException">Thrown if any other error occurs when making the login request.</exception>
-        public async Task Login(string username, string password)
+        public async Task Login()
         {
-            var byteArray = Encoding.ASCII.GetBytes($"{username}:{password}");
-            var httpRequest = new HttpRequestMessage(HttpMethod.Post, $"{GPodderConfig.BaseApiUrl}/api/2/auth/{username}/login.json");
+            var byteArray = Encoding.ASCII.GetBytes($"{this.username}:{this.password}");
+            var httpRequest = new HttpRequestMessage(HttpMethod.Post, $"{GPodderConfig.BaseApiUrl}/api/2/auth/{this.username}/login.json");
             httpRequest.Headers.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
             var authResponse = await Utilities.HttpClient.SendAsync(httpRequest);
             try
@@ -71,13 +76,12 @@ namespace GPodder.NET
         /// <summary>
         /// Logs the user out of gPodder.
         /// </summary>
-        /// <param name="username">Username for the gPodder account.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous logout operation.</returns>
         /// <exception cref="InvalidSessionIdException">Thrown when the provided session ID does not match the provided user.</exception>
         /// <exception cref="HttpRequestException">Thrown if any other error occurs when making the login request.</exception>
-        public async Task Logout(string username)
+        public async Task Logout()
         {
-            var httpRequest = new HttpRequestMessage(HttpMethod.Post, $"{GPodderConfig.BaseApiUrl}/api/2/auth/{username}/logout.json");
+            var httpRequest = new HttpRequestMessage(HttpMethod.Post, $"{GPodderConfig.BaseApiUrl}/api/2/auth/{this.username}/logout.json");
             var logoutResponse = await Utilities.HttpClient.SendAsync(httpRequest);
 
             try

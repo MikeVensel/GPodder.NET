@@ -4,9 +4,6 @@
 
 namespace GPodder.NET.Tests
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
     using System.Threading.Tasks;
     using Microsoft.Extensions.Configuration;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -18,7 +15,6 @@ namespace GPodder.NET.Tests
     public class DeviceSyncTests
     {
         private const string DeviceId = "gPodder.NET-test";
-        private static string username;
         private static GPodderClient client;
 
         /// <summary>
@@ -32,9 +28,8 @@ namespace GPodder.NET.Tests
             var configBuilder = new ConfigurationBuilder()
                 .AddUserSecrets<SubscriptionsTests>();
             var configuration = configBuilder.Build();
-            username = configuration["GpodderUsername"];
-            client = new GPodderClient();
-            await client.Authentication.Login(username, configuration["GpodderPassword"]);
+            client = new GPodderClient(configuration["GpodderUsername"], configuration["GpodderPassword"]);
+            await client.Authentication.Login();
         }
 
         /// <summary>
@@ -44,17 +39,17 @@ namespace GPodder.NET.Tests
         [ClassCleanup]
         public static async Task CleanUpTests()
         {
-            await client.Authentication.Logout(username);
+            await client.Authentication.Logout();
         }
 
         /// <summary>
-        /// Tests the <see cref="DeviceSync.GetSyncStatus(string)"/> method.
+        /// Tests the <see cref="DeviceSync.GetSyncStatus"/> method.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [TestMethod]
         public async Task TestGetSyncStatus()
         {
-            var syncStatus = await client.DeviceSync.GetSyncStatus(username);
+            var syncStatus = await client.DeviceSync.GetSyncStatus();
             Assert.IsNotNull(syncStatus);
         }
     }

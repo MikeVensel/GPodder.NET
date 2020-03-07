@@ -19,18 +19,28 @@ namespace GPodder.NET
     /// </summary>
     public class EpisodeActions
     {
+        private string username;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EpisodeActions"/> class.
+        /// </summary>
+        /// <param name="username">Username for the gPodder account.</param>
+        public EpisodeActions(string username)
+        {
+            this.username = username;
+        }
+
         /// <summary>
         /// Gets episode actions.
         /// </summary>
-        /// <param name="username">Username for the gPodder account.</param>
         /// <param name="podcastUrl">The URL of a Podcast feed; if set, only actions for episodes of the given podcast are returned.</param>
         /// <param name="deviceId">A Device ID; if set, only actions for the given device are returned.</param>
         /// <param name="sinceTimestamp">Only episode actions since the given timestamp are returned.</param>
         /// <param name="aggregated">If true, only the latest actions is returned for each episode.</param>
         /// <returns>A <see cref="Task{EpisodeActionsResponse}"/> representing the result of the asynchronous operation.</returns>
-        public async Task<EpisodeActionsResponse> GetEpisodeActions(string username, string podcastUrl = "", string deviceId = "", int sinceTimestamp = 0, bool aggregated = true)
+        public async Task<EpisodeActionsResponse> GetEpisodeActions(string podcastUrl = "", string deviceId = "", long sinceTimestamp = 0, bool aggregated = true)
         {
-            var urlStringBuilder = new StringBuilder($"{GPodderConfig.BaseApiUrl}/api/2/episodes/{username}.json" +
+            var urlStringBuilder = new StringBuilder($"{GPodderConfig.BaseApiUrl}/api/2/episodes/{this.username}.json" +
                 $"?since={sinceTimestamp}" +
                 $"&aggregated={aggregated}");
 
@@ -56,15 +66,14 @@ namespace GPodder.NET
         /// <summary>
         /// Upload episode actions.
         /// </summary>
-        /// <param name="username">Username for the gPodder account.</param>
         /// <param name="episodeActionsCollection">A collection of episode actions to be uploaded.</param>
         /// <returns>A <see cref="Task{UpdatedDeviceSubscriptions}"/> representing the asynchronous operation.</returns>
-        public async Task<UpdatedDeviceSubscriptions> UploadEpisodeActions(string username, IEnumerable<EpisodeAction> episodeActionsCollection)
+        public async Task<UpdatedDeviceSubscriptions> UploadEpisodeActions(IEnumerable<EpisodeAction> episodeActionsCollection)
         {
             var episodeActionsString = JsonSerializer.Serialize(episodeActionsCollection);
             var stringContent = new StringContent(episodeActionsString);
             var response = await Utilities.HttpClient.PostAsync(
-                new Uri($"{GPodderConfig.BaseApiUrl}/api/2/episodes/{username}.json"),
+                new Uri($"{GPodderConfig.BaseApiUrl}/api/2/episodes/{this.username}.json"),
                 stringContent);
             response.EnsureSuccessStatusCode();
             var contentStream = await response.Content.ReadAsStreamAsync();

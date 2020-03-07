@@ -35,6 +35,6 @@ namespace GPodder.NET.Models
         /// Gets or sets the number of subscriptions on the device.
         /// </summary>
         [JsonPropertyName("subscriptions")]
-        public int Subscrciptions { get; set; }
+        public long Subscrciptions { get; set; }
     }
 }

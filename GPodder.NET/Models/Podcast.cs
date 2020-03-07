@@ -36,7 +36,7 @@ namespace GPodder.NET.Models
         /// Gets or sets the number of subscribers for the podcast.
         /// </summary>
         [JsonPropertyName("subscribers")]
-        public int Subscribers { get; set; }
+        public long Subscribers { get; set; }
 
         /// <summary>
         /// Gets or sets the logo url for the podcast.

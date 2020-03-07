@@ -42,5 +42,11 @@ namespace GPodder.NET.Models
         /// </summary>
         [JsonPropertyName("updates")]
         public IEnumerable<Episode> EpisodeUpdates { get; set; }
+
+        /// <summary>
+        /// Gets or sets the current timestamp; for retrieving changes since the last query.
+        /// </summary>
+        [JsonPropertyName("timestamp")]
+        public long LastUpdatedTimestamp { get; set; }
     }
 }

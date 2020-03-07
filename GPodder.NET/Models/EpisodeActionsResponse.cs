@@ -8,7 +8,7 @@ namespace GPodder.NET.Models
     using System.Text.Json.Serialization;
 
     /// <summary>
-    /// Class used to handle responses to the <see cref="EpisodeActions.GetEpisodeActions(string, string, string, int, bool)"/> method.
+    /// Class used to handle responses to the <see cref="EpisodeActions.GetEpisodeActions(string, string, long, bool)"/> method.
     /// </summary>
     public class EpisodeActionsResponse
     {
@@ -24,6 +24,6 @@ namespace GPodder.NET.Models
         /// for episode actions updates.
         /// </summary>
         [JsonPropertyName("timestamp")]
-        public int Timestamp { get; set; }
+        public long Timestamp { get; set; }
     }
 }

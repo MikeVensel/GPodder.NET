@@ -14,7 +14,6 @@ namespace GPodder.NET.Tests
     [TestClass]
     public class SuggestionsTests
     {
-        private static string username;
         private static GPodderClient client;
 
         /// <summary>
@@ -28,9 +27,8 @@ namespace GPodder.NET.Tests
             var configBuilder = new ConfigurationBuilder()
                 .AddUserSecrets<AuthenticationTests>();
             var configuration = configBuilder.Build();
-            username = configuration["GPodderUsername"];
-            client = new GPodderClient();
-            await client.Authentication.Login(username, configuration["GpodderPassword"]);
+            client = new GPodderClient(configuration["GPodderUsername"], configuration["GpodderPassword"]);
+            await client.Authentication.Login();
         }
 
         /// <summary>
@@ -40,7 +38,7 @@ namespace GPodder.NET.Tests
         [ClassCleanup]
         public static async Task CleanUpTests()
         {
-            await client.Authentication.Logout(username);
+            await client.Authentication.Logout();
         }
 
         /// <summary>

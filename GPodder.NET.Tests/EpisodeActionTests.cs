@@ -4,9 +4,7 @@
 
 namespace GPodder.NET.Tests
 {
-    using System.Collections.Generic;
     using System.Threading.Tasks;
-    using GPodder.NET.Models;
     using Microsoft.Extensions.Configuration;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -17,7 +15,6 @@ namespace GPodder.NET.Tests
     public class EpisodeActionTests
     {
         private const string DeviceId = "gPodder.NET-test";
-        private static string username;
         private static GPodderClient client;
 
         /// <summary>
@@ -31,9 +28,8 @@ namespace GPodder.NET.Tests
             var configBuilder = new ConfigurationBuilder()
                 .AddUserSecrets<SubscriptionsTests>();
             var configuration = configBuilder.Build();
-            username = configuration["GpodderUsername"];
-            client = new GPodderClient();
-            await client.Authentication.Login(username, configuration["GpodderPassword"]);
+            client = new GPodderClient(configuration["GpodderUsername"], configuration["GpodderPassword"]);
+            await client.Authentication.Login();
         }
 
         /// <summary>
@@ -43,22 +39,25 @@ namespace GPodder.NET.Tests
         [ClassCleanup]
         public static async Task CleanUpTests()
         {
-            await client.Authentication.Logout(username);
+            await client.Authentication.Logout();
         }
 
         /// <summary>
-        /// Tests the <see cref="EpisodeActions.GetEpisodeActions(string, string, string, int, bool)"/> method.
+        /// Tests the <see cref="EpisodeActions.GetEpisodeActions(string, string, long, bool)"/> method.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [TestMethod]
         public async Task TestGetEpisodeActionsAsync()
         {
-            var episodeActionsResponse = await client.EpisodeActions.GetEpisodeActions(username);
+            var episodeActionsResponse = await client.EpisodeActions.GetEpisodeActions();
             Assert.IsNotNull(episodeActionsResponse);
             Assert.IsNotNull(episodeActionsResponse.ActionsList);
-            Assert.IsInstanceOfType(episodeActionsResponse.Timestamp, typeof(int));
+            Assert.IsInstanceOfType(episodeActionsResponse.Timestamp, typeof(long));
         }
 
+        /// <summary>
+        /// Tests the <see cref="EpisodeActions.UploadEpisodeActions(System.Collections.Generic.IEnumerable{Models.EpisodeAction})"/> method.
+        /// </summary>
         [TestMethod]
         public void TestUploadEpisodeActions()
         {

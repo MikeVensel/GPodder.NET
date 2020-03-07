@@ -17,21 +17,31 @@ namespace GPodder.NET
 
     /// <summary>
     /// Handles retrieving user subscription data from gPodder.
-    /// Ensure that <see cref="Authentication.Login(string, string)"/> has been run
+    /// Ensure that <see cref="Authentication.Login"/> has been run
     /// before attempting to use the methods in this class.
     /// </summary>
     public class Subscriptions
     {
+        private string username;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Subscriptions"/> class.
+        /// </summary>
+        /// <param name="username">Username for the gPodder account.</param>
+        public Subscriptions(string username)
+        {
+            this.username = username;
+        }
+
         /// <summary>
         /// Returns all subscriptions for the user.
         /// This can be used to present the user a list of podcasts when the application starts for the first time.
         /// </summary>
-        /// <param name="username">Username for the gPodder account.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation. </returns>
-        public async Task<IEnumerable<Podcast>> GetAllSubscriptions(string username)
+        public async Task<IEnumerable<Podcast>> GetAllSubscriptions()
         {
             var response = await Utilities.HttpClient.GetAsync(
-                new Uri($"{GPodderConfig.BaseApiUrl}/subscriptions/{username}.json"));
+                new Uri($"{GPodderConfig.BaseApiUrl}/subscriptions/{this.username}.json"));
             return await this.HandleResponseAsync<IEnumerable<Podcast>>(response);
         }
 
@@ -39,27 +49,25 @@ namespace GPodder.NET
         /// Returns device subscriptions for the user.
         /// This can be used to present the user a list of podcasts when the application starts for the first time.
         /// </summary>
-        /// <param name="username">Username for the gPodder account.</param>
         /// <param name="deviceId">The device ID for the device.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation. It will contain a <see cref="IEnumerable{String}"/> if successful.</returns>
-        public async Task<IEnumerable<string>> GetDeviceSubscriptions(string username, string deviceId)
+        public async Task<IEnumerable<string>> GetDeviceSubscriptions(string deviceId)
         {
             var response = await Utilities.HttpClient.GetAsync(
-                new Uri($"{GPodderConfig.BaseApiUrl}/subscriptions/{username}/{deviceId}.json"));
+                new Uri($"{GPodderConfig.BaseApiUrl}/subscriptions/{this.username}/{deviceId}.json"));
             return await this.HandleResponseAsync<IEnumerable<string>>(response);
         }
 
         /// <summary>
         /// Retrieves device subscription changes since the timestamp provided.
         /// </summary>
-        /// <param name="username">Username for the gPodder account.</param>
         /// <param name="deviceId">The device ID for the device.</param>
         /// <param name="sinceTimeStamp">Timestamp previously returned by gPodder which indicates when last this device checked for updates.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.It will contain a <see cref="SubscriptionChanges"/> object if successful.</returns>
-        public async Task<SubscriptionChanges> GetSubscriptionChanges(string username, string deviceId, int sinceTimeStamp = 0)
+        public async Task<SubscriptionChanges> GetSubscriptionChanges(string deviceId, long sinceTimeStamp = 0)
         {
             var response = await Utilities.HttpClient.GetAsync(
-                new Uri($"{GPodderConfig.BaseApiUrl}/api/2/subscriptions/{username}/{deviceId}.json" +
+                new Uri($"{GPodderConfig.BaseApiUrl}/api/2/subscriptions/{this.username}/{deviceId}.json" +
                 $"?since={sinceTimeStamp}"));
             return await this.HandleResponseAsync<SubscriptionChanges>(response);
         }
@@ -67,16 +75,15 @@ namespace GPodder.NET
         /// <summary>
         /// Upload the current subscription list of the given user to the server.
         /// </summary>
-        /// <param name="username">Username for the gPodder account.</param>
         /// <param name="deviceId">The device ID for the device.</param>
         /// <param name="format">The <see cref="SubUploadFormat"/> of the provided subscriptions.</param>
         /// <param name="stream">A <see cref="Stream"/> of the subscriptions to upload.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        public async Task UploadSubscriptionsOfDevice(string username, string deviceId, SubUploadFormat format, Stream stream)
+        public async Task UploadSubscriptionsOfDevice(string deviceId, SubUploadFormat format, Stream stream)
         {
             var streamContent = new StreamContent(stream);
             var response = await Utilities.HttpClient.PutAsync(
-                new Uri($"{GPodderConfig.BaseApiUrl}/subscriptions/{username}/{deviceId}.{format.ToString().ToLower()}"),
+                new Uri($"{GPodderConfig.BaseApiUrl}/subscriptions/{this.username}/{deviceId}.{format.ToString().ToLower()}"),
                 streamContent);
             this.HandleResponseErrors(response);
             var contentString = await response.Content.ReadAsStringAsync();
@@ -89,16 +96,15 @@ namespace GPodder.NET
         /// <summary>
         /// Upload changes to the subscriptions on the device to gPodder.
         /// </summary>
-        /// <param name="username">Username for the gPodder account.</param>
         /// <param name="deviceId">The device ID for the device.</param>
         /// <param name="subscriptionChanges">A <see cref="SubscriptionChanges"/> of the subscription changes for the device.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation. It will contain a <see cref="UpdatedDeviceSubscriptions"/> object if successful.</returns>
-        public async Task<UpdatedDeviceSubscriptions> UploadDeviceSubscriptionChanges(string username, string deviceId, SubscriptionChanges subscriptionChanges)
+        public async Task<UpdatedDeviceSubscriptions> UploadDeviceSubscriptionChanges(string deviceId, SubscriptionChanges subscriptionChanges)
         {
             var subChangesString = JsonSerializer.Serialize(subscriptionChanges);
             var httpContent = new StringContent(subChangesString);
             var response = await Utilities.HttpClient.PostAsync(
-                new Uri($"{GPodderConfig.BaseApiUrl}/api/2/subscriptions/{username}/{deviceId}.json"),
+                new Uri($"{GPodderConfig.BaseApiUrl}/api/2/subscriptions/{this.username}/{deviceId}.json"),
                 httpContent);
             try
             {

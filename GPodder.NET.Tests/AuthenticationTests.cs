@@ -14,8 +14,6 @@ namespace GPodder.NET.Tests
     [TestClass]
     public class AuthenticationTests
     {
-        private static string username;
-        private static string password;
         private static GPodderClient client;
 
         /// <summary>
@@ -28,30 +26,28 @@ namespace GPodder.NET.Tests
             var configBuilder = new ConfigurationBuilder()
                 .AddUserSecrets<AuthenticationTests>();
             var configuration = configBuilder.Build();
-            username = configuration["GpodderUsername"];
-            password = configuration["GPodderPassword"];
-            client = new GPodderClient();
+            client = new GPodderClient(configuration["GpodderUsername"], configuration["GPodderPassword"]);
         }
 
         /// <summary>
-        /// Tests the <see cref="Authentication.Login(string, string)"/> method.
+        /// Tests the <see cref="Authentication.Login"/> method.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [TestMethod]
         public async Task TestLogin()
         {
-            await client.Authentication.Login(username, password);
+            await client.Authentication.Login();
         }
 
         /// <summary>
-        /// Tests the <see cref="Authentication.Logout(string)"/> method.
+        /// Tests the <see cref="Authentication.Logout"/> method.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [TestMethod]
         public async Task TestLogOut()
         {
-            await client.Authentication.Login(username, password);
-            await client.Authentication.Logout(username);
+            await client.Authentication.Login();
+            await client.Authentication.Logout();
         }
     }
 }

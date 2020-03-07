@@ -21,7 +21,6 @@ namespace GPodder.NET.Tests
     public class SubscriptionsTests
     {
         private const string DeviceId = "gPodder.NET-test";
-        private static string username;
         private static GPodderClient client;
 
         /// <summary>
@@ -35,9 +34,8 @@ namespace GPodder.NET.Tests
             var configBuilder = new ConfigurationBuilder()
                 .AddUserSecrets<SubscriptionsTests>();
             var configuration = configBuilder.Build();
-            username = configuration["GpodderUsername"];
-            client = new GPodderClient();
-            await client.Authentication.Login(username, configuration["GpodderPassword"]);
+            client = new GPodderClient(configuration["GpodderUsername"], configuration["GpodderPassword"]);
+            await client.Authentication.Login();
         }
 
         /// <summary>
@@ -47,57 +45,57 @@ namespace GPodder.NET.Tests
         [ClassCleanup]
         public static async Task CleanUpTests()
         {
-            await client.Authentication.Logout(username);
+            await client.Authentication.Logout();
         }
 
         /// <summary>
-        /// Tests the <see cref="Subscriptions.GetAllSubscriptions(string)"/> method.
+        /// Tests the <see cref="Subscriptions.GetAllSubscriptions"/> method.
         /// </summary>
         /// <returns><see cref="Task"/> representing the asynchronous unit test.</returns>
         [TestMethod]
         public async Task TestGetAllSubscriptions()
         {
-            var podcastSubscriptions = await client.Subscriptions.GetAllSubscriptions(username);
+            var podcastSubscriptions = await client.Subscriptions.GetAllSubscriptions();
             Assert.IsNotNull(podcastSubscriptions);
         }
 
         /// <summary>
-        /// Tests the <see cref="Subscriptions.GetDeviceSubscriptions(string, string)"/> method.
+        /// Tests the <see cref="Subscriptions.GetDeviceSubscriptions(string)"/> method.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [TestMethod]
         public async Task TestGetDeviceSubscriptions()
         {
-            var podcastSubscriptions = await client.Subscriptions.GetDeviceSubscriptions(username, DeviceId);
+            var podcastSubscriptions = await client.Subscriptions.GetDeviceSubscriptions(DeviceId);
             Assert.IsNotNull(podcastSubscriptions);
         }
 
         /// <summary>
-        /// Tests the <see cref="Subscriptions.GetSubscriptionChanges(string, string, int)"/> method.
+        /// Tests the <see cref="Subscriptions.GetSubscriptionChanges(string, long)"/> method.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [TestMethod]
         public async Task TestGetDeviceSubscriptionUpdates()
         {
-            var deviceSubUpdates = await client.Subscriptions.GetSubscriptionChanges(username, DeviceId);
+            var deviceSubUpdates = await client.Subscriptions.GetSubscriptionChanges(DeviceId);
             Assert.IsNotNull(deviceSubUpdates);
 
             // Ensure that get subscriptions using the timestamp we just received returns no changes as it should.
-            deviceSubUpdates = await client.Subscriptions.GetSubscriptionChanges(username, DeviceId, deviceSubUpdates.Timestamp);
+            deviceSubUpdates = await client.Subscriptions.GetSubscriptionChanges(DeviceId, deviceSubUpdates.Timestamp);
             Assert.IsNotNull(deviceSubUpdates);
             Assert.IsTrue(deviceSubUpdates.Add.Count() == 0);
             Assert.IsTrue(deviceSubUpdates.Remove.Count() == 0);
         }
 
         /// <summary>
-        /// Tests the <see cref="Subscriptions.GetDeviceSubscriptions(string, string)"/> method.
+        /// Tests the <see cref="Subscriptions.GetDeviceSubscriptions(string)"/> method.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [TestMethod]
         public async Task TestUploadDeviceSubscriptions()
         {
             var deviceId = "gPodder.NET-test";
-            var podcastsBeforeUpload = await client.Subscriptions.GetDeviceSubscriptions(username, deviceId);
+            var podcastsBeforeUpload = await client.Subscriptions.GetDeviceSubscriptions(deviceId);
 
             // todo handle this either by providing a sample file as a resource or just creating an in memory stream here with test data.
             var testFilePath = Path.Combine(
@@ -105,14 +103,13 @@ namespace GPodder.NET.Tests
                                             "Downloads",
                                             "antennapod-feeds.opml");
             using var testFileStream = File.Open(testFilePath, FileMode.Open);
-            await client.Subscriptions.UploadSubscriptionsOfDevice(username, deviceId, SubUploadFormat.OPML, testFileStream);
-            var podcastsAfterUpload = await client.Subscriptions.GetDeviceSubscriptions(username, deviceId);
+            await client.Subscriptions.UploadSubscriptionsOfDevice(deviceId, SubUploadFormat.OPML, testFileStream);
+            var podcastsAfterUpload = await client.Subscriptions.GetDeviceSubscriptions(deviceId);
             Assert.IsNotNull(podcastsAfterUpload);
-            Assert.IsTrue(podcastsAfterUpload.Count() >= podcastsBeforeUpload.Count());
         }
 
         /// <summary>
-        /// Tests the <see cref="Subscriptions.UploadDeviceSubscriptionChanges(string, string, Models.SubscriptionChanges)"/>.
+        /// Tests the <see cref="Subscriptions.UploadDeviceSubscriptionChanges(string, SubscriptionChanges)"/>.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [TestMethod]
@@ -127,7 +124,7 @@ namespace GPodder.NET.Tests
                 },
             };
 
-            var updatedSubscriptions = await client.Subscriptions.UploadDeviceSubscriptionChanges(username, deviceId, testSubscriptionChanges);
+            var updatedSubscriptions = await client.Subscriptions.UploadDeviceSubscriptionChanges(deviceId, testSubscriptionChanges);
             Assert.IsNotNull(updatedSubscriptions);
         }
     }

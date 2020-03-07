@@ -17,7 +17,6 @@ namespace GPodder.NET.Tests
     [TestClass]
     public class DevicesTests
     {
-        private static string username;
         private static GPodderClient client;
 
         /// <summary>
@@ -31,9 +30,8 @@ namespace GPodder.NET.Tests
             var configBuilder = new ConfigurationBuilder()
                 .AddUserSecrets<DevicesTests>();
             var configuration = configBuilder.Build();
-            username = configuration["GpodderUsername"];
-            client = new GPodderClient();
-            await client.Authentication.Login(username, configuration["GPodderPassword"]);
+            client = new GPodderClient(configuration["GpodderUsername"], configuration["GPodderPassword"]);
+            await client.Authentication.Login();
         }
 
         /// <summary>
@@ -43,17 +41,17 @@ namespace GPodder.NET.Tests
         [ClassCleanup]
         public static async Task CleanUpTests()
         {
-            await client.Authentication.Logout(username);
+            await client.Authentication.Logout();
         }
 
         /// <summary>
-        /// Tests the <see cref="Devices.ListDevices(string)"/> method.
+        /// Tests the <see cref="Devices.ListDevices"/> method.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [TestMethod]
         public async Task TestListDevices()
         {
-            var deviceCollection = await client.Devices.ListDevices(username);
+            var deviceCollection = await client.Devices.ListDevices();
             Assert.IsNotNull(deviceCollection);
             foreach (var device in deviceCollection)
             {
@@ -62,14 +60,14 @@ namespace GPodder.NET.Tests
         }
 
         /// <summary>
-        /// Tests the <see cref="Devices.UpdateDeviceData(string, Device)"/> method
+        /// Tests the <see cref="Devices.UpdateDeviceData(Device)"/> method
         /// when creating a new device.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [TestMethod]
         public async Task TestCreateDevice()
         {
-            var deviceCollection = await client.Devices.ListDevices(username);
+            var deviceCollection = await client.Devices.ListDevices();
             var deviceCount = deviceCollection.Count();
             var newDevice = new Device()
             {
@@ -78,44 +76,49 @@ namespace GPodder.NET.Tests
                 Type = "laptop",
             };
 
-            await client.Devices.UpdateDeviceData(username, newDevice);
-            deviceCollection = await client.Devices.ListDevices(username);
-            Assert.IsTrue(deviceCollection.Count() == (deviceCount + 1));
+            await client.Devices.UpdateDeviceData(newDevice);
+            deviceCollection = await client.Devices.ListDevices();
+            Assert.IsTrue(deviceCollection.Any(device =>
+            {
+                return device.Id == newDevice.Id
+                       && device.Caption == newDevice.Caption
+                       && device.Type == newDevice.Type;
+            }));
         }
 
         /// <summary>
-        /// Tests the <see cref="Devices.UpdateDeviceData(string, Models.Device)"/> method.
+        /// Tests the <see cref="Devices.UpdateDeviceData(Device)"/> method.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [TestMethod]
         public async Task TestUpdateDeviceData()
         {
-            var deviceCollection = await client.Devices.ListDevices(username);
+            var deviceCollection = await client.Devices.ListDevices();
             Assert.IsNotNull(deviceCollection);
             Assert.IsTrue(deviceCollection.Count() > 0);
             var updatedDevice = deviceCollection.First();
             var currentCaption = updatedDevice.Caption;
             updatedDevice.Caption = "Test change caption";
-            await client.Devices.UpdateDeviceData(username, updatedDevice);
-            deviceCollection = await client.Devices.ListDevices(username);
+            await client.Devices.UpdateDeviceData(updatedDevice);
+            deviceCollection = await client.Devices.ListDevices();
             Assert.IsTrue(deviceCollection.Any(d => d.Caption == updatedDevice.Caption));
             updatedDevice.Caption = currentCaption;
-            await client.Devices.UpdateDeviceData(username, updatedDevice);
+            await client.Devices.UpdateDeviceData(updatedDevice);
         }
 
         /// <summary>
-        /// Tests the <see cref="Devices.GetDeviceUpdates(string, string, DateTime, bool)"/> method.
+        /// Tests the <see cref="Devices.GetDeviceUpdates(string, long, bool)"/> method.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [TestMethod]
         public async Task TestGetDeviceUpdates()
         {
-            var deviceCollection = await client.Devices.ListDevices(username);
-
-            // todo setup a device for testing
-            var device = deviceCollection.First(d => d.Caption.Contains("PLACEHOLDER"));
-            var lastDateChecked = new DateTime(2020, 1, 31);
-            var deviceUpdates = await client.Devices.GetDeviceUpdates(username, device.Id, lastDateChecked, true);
+            var deviceCollection = await client.Devices.ListDevices();
+            var device = deviceCollection.First();
+            var lastDateChecked = 0;
+            var deviceUpdates = await client.Devices.GetDeviceUpdates(device.Id, lastDateChecked, true);
+            Assert.IsNotNull(deviceUpdates);
+            Assert.IsTrue(deviceUpdates.LastUpdatedTimestamp > 0);
         }
     }
 }

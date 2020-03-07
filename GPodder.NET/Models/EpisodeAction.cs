@@ -60,19 +60,19 @@ namespace GPodder.NET.Models
         /// Requires position and total to be set and is only valid when the action is <see cref="EpisodeActionType.Play"/>.
         /// </summary>
         [JsonPropertyName("started")]
-        public int? StartingPosition { get; set; }
+        public long? StartingPosition { get; set; }
 
         /// <summary>
         /// Gets or sets the position (in seconds) at which the client stopped playback.
         /// This property is only valid when the action is <see cref="EpisodeActionType.Play"/>.
         /// </summary>
         [JsonPropertyName("position")]
-        public int? PlaybackPosition { get; set; }
+        public long? PlaybackPosition { get; set; }
 
         /// <summary>
         /// Gets or sets the total length of the file in seconds.
         /// Requires position and started to be set and is only valid when the action is <see cref="EpisodeActionType.Play"/>.
         /// </summary>
-        public int? TotalEpisodeLength { get; set; }
+        public long? TotalEpisodeLength { get; set; }
     }
 }

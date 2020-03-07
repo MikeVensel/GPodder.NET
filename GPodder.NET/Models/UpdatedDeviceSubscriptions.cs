@@ -28,7 +28,7 @@ namespace GPodder.NET.Models
         /// the upload.
         /// </summary>
         [JsonPropertyName("timestamp")]
-        public int Timestamp { get; set; }
+        public long Timestamp { get; set; }
 
         /// <summary>
         /// Gets or sets a list of URLs that have been rewritten from gPodder.

@@ -38,6 +38,6 @@ namespace GPodder.NET.Models
         /// the device asked for changes last.
         /// </summary>
         [JsonPropertyName("timestamp")]
-        public int Timestamp { get; set; }
+        public long Timestamp { get; set; }
     }
 }

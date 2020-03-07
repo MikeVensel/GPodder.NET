@@ -28,6 +28,6 @@ namespace GPodder.NET.Models
         /// from gPodder.
         /// </summary>
         [JsonPropertyName("usage")]
-        public int Usage { get; set; }
+        public long Usage { get; set; }
     }
 }
